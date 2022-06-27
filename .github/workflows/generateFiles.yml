@@ -1,4 +1,4 @@
-name: Generate publiccode.yaml and .env files
+name: GUpdate publiccode.yaml, .env and README.md files
 
 # Controls when the workflow will run
 on:
@@ -9,12 +9,12 @@ on:
 jobs:
 
   create-publiccode-and-env:
-    name: Create publiccode.yaml and .env
+    name: Update publiccode.yaml, .env and README.md
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
-      - name: Create publiccode.yaml
+      - name: Update publiccode.yaml
         uses: 1arp/create-a-file-action@0.2
         with:
           path: ''
@@ -61,7 +61,7 @@ jobs:
                 - name: common-gateway
                   versionMin: 1.0.0
 
-      - name: Create .env
+      - name: Update .env
         uses: 1arp/create-a-file-action@0.2
         with:
           path: ''
@@ -198,6 +198,12 @@ jobs:
             ##################################################
             PUBLICCODE="https://raw.githubusercontent.com/${{ github.repository }}/main/publiccode.yaml"
 
+      - name: Find and Replace repository location in README.md
+        uses: jacobtomlinson/gha-find-replace@v2
+        with:
+          find: "CommonGateway/PetStore"
+          replace: "${{ github.repository }}"
+          include: "**README.md" # Will match all README.md files in any nested directory
 
       - name: Commit and push changes
         run: |
@@ -206,6 +212,11 @@ jobs:
 
           git add publiccode.yaml
           git commit -m "Auto updated publiccode.yaml"
+
           git add .env
           git commit -m "Auto updated .env"
+
+          git add README.md
+          git commit -m "Auto updated README.md"
+
           git push
