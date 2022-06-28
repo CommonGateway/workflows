@@ -226,7 +226,7 @@ jobs:
           git add README.md
           git commit -m "Auto updated README.md"
 
-          git add README.md
+          git add .github/workflows/generateFiles.yml
           git commit -m "Disable generateFiles job after first run"
 
           git push
