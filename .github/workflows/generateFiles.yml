@@ -205,6 +205,13 @@ jobs:
           replace: "${{ github.repository }}"
           include: "**README.md" # Will match all README.md files in any nested directory
 
+      - name: Disable generateFiles workflow
+        uses: jacobtomlinson/gha-find-replace@v2
+        with:
+          find: "create:"
+          replace: "# create:"
+          include: "**generateFiles.yml" # Will match all generateFiles.yml files in any nested directory
+
       - name: Commit and push changes
         run: |
           git config --global user.name "${{ github.actor }}"
@@ -218,5 +225,8 @@ jobs:
 
           git add README.md
           git commit -m "Auto updated README.md"
+
+          git add README.md
+          git commit -m "Disable generateFiles job after first run"
 
           git push
