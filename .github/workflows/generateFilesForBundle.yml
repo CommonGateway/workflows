@@ -1,4 +1,4 @@
-name: GUpdate publiccode.yaml, .env and README.md files
+name: Update publiccode.yaml and README.md files
 
 # Controls when the workflow will run
 on:
