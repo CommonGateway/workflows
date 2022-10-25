@@ -9,7 +9,7 @@ on:
 jobs:
 
   create-publiccode-and-env:
-    name: Update publiccode.yaml, .env and README.md
+    name: Update publiccode.yaml and README.md
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
@@ -47,13 +47,6 @@ jobs:
           find: "CommonGateway/PetStoreBundle"
           replace: "${{ github.repository }}"
           include: "**README.md" # Will match all README.md files in any nested directory
-
-      # - name: Disable generateFiles workflow
-      #   uses: jacobtomlinson/gha-find-replace@v2
-      #   with:
-      #     find: "create:"
-      #     replace: "# create:"
-      #     include: "**generateFiles.yml" # Will match all generateFiles.yml files in any nested directory
 
       - name: Commit and push changes
         run: |
