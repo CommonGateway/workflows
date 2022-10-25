@@ -15,6 +15,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Set username and email
+        run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.event.pusher.email }}"
+
       - name: Update publiccode.yaml
         uses: 1arp/create-a-file-action@0.2
         with:
@@ -40,6 +45,12 @@ jobs:
                 shortDescription: "${{ github.event.repository.name }}"
               en:
                 shortDescription: "${{ github.event.repository.name }}"
+                
+      - name: Commit and push publiccode
+        run: |
+          git add publiccode.yaml
+          git commit -m "Auto updated publiccode.yaml"
+          git push
      
       - name: Find and Replace repository location in README.md
         uses: jacobtomlinson/gha-find-replace@v2
@@ -48,12 +59,8 @@ jobs:
           replace: "${{ github.repository }}"
           include: "**README.md" # Will match all README.md files in any nested directory
 
-      - name: Commit and push changes
+      - name: Commit and push readme
         run: |
-          git config --global user.name "${{ github.actor }}"
-          git config --global user.email "${{ github.event.pusher.email }}"
-          git add publiccode.yaml
-          git commit -m "Auto updated publiccode.yaml"
           git add README.md
           git commit -m "Auto updated README.md"
           git push
