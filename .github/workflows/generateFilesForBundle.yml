@@ -1,0 +1,66 @@
+name: GUpdate publiccode.yaml, .env and README.md files
+
+# Controls when the workflow will run
+on:
+  # Allows this workflow to be used in other repositories
+  workflow_call:
+
+# Uses the default testing workflow from https://github.com/CommonGateway/workflows 
+jobs:
+
+  create-publiccode-and-env:
+    name: Update publiccode.yaml, .env and README.md
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Update publiccode.yaml
+        uses: 1arp/create-a-file-action@0.2
+        with:
+          path: ''
+          file: 'publiccode.yaml'
+          content: |
+            publiccodeYmlVersion: "0.1"
+            name: "${{ github.event.repository.name }}"
+            url: "https://github.com/${{ github.repository }}"
+            releaseDate: "2022-10-01"
+            softwareType: addon
+
+            platforms:
+              - web
+              
+            categories:
+              - collaboration
+              - it-development
+              
+            developmentStatus: beta
+            description:
+              nl:
+                shortDescription: "${{ github.event.repository.name }}"
+              en:
+                shortDescription: "${{ github.event.repository.name }}"
+     
+      - name: Find and Replace repository location in README.md
+        uses: jacobtomlinson/gha-find-replace@v2
+        with:
+          find: "CommonGateway/PetStoreBundle"
+          replace: "${{ github.repository }}"
+          include: "**README.md" # Will match all README.md files in any nested directory
+
+      # - name: Disable generateFiles workflow
+      #   uses: jacobtomlinson/gha-find-replace@v2
+      #   with:
+      #     find: "create:"
+      #     replace: "# create:"
+      #     include: "**generateFiles.yml" # Will match all generateFiles.yml files in any nested directory
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.event.pusher.email }}"
+          git add publiccode.yaml
+          git commit -m "Auto updated publiccode.yaml"
+          git add README.md
+          git commit -m "Auto updated README.md"
+          git push
